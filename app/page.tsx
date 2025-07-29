@@ -1,23 +1,27 @@
 'use client'; 
 
-import { DeployButton } from "@/components/deploy-button";
-import { EnvVarWarning } from "@/components/env-var-warning";
-import { AuthButton } from "@/components/auth-button";
-import { Hero } from "@/components/hero";
-import { ThemeSwitcher } from "@/components/theme-switcher";
-import { ConnectSupabaseSteps } from "@/components/tutorial/connect-supabase-steps";
-import { SignUpUserSteps } from "@/components/tutorial/sign-up-user-steps";
-import { hasEnvVars } from "@/lib/utils";
-import Link from "next/link";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
 
 export default function Home() {
   const router = useRouter();
+  const supabase = createClient();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    router.push("/blog"); // Redirect to /blog on load
+    const checkLogin = async () => {
+      // Check for a user in your custom user table (e.g., via localStorage/session)
+      const email = typeof window !== "undefined" ? localStorage.getItem("user_email") : null;
+      if (email) {
+        router.push("/blog");
+      } else {
+        router.push("/auth/login");
+      }
+      setLoading(false);
+    };
+    checkLogin();
   }, [router]);
 
-  return null;
+  return loading ? null : null;
 }

@@ -1,29 +1,9 @@
 'use client'
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { ThemeSwitcher } from "@/components/theme-switcher";
 
 // Simple theme switcher using Tailwind's dark mode
-function ThemeSwitcher() {
-  const [dark, setDark] = useState(false);
-
-  useEffect(() => {
-    if (dark) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-  }, [dark]);
-
-  return (
-    <button
-      className="absolute top-4 right-4 px-4 py-2 rounded-lg shadow bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-200 transition"
-      onClick={() => setDark(d => !d)}
-      aria-label="Toggle theme"
-    >
-      {dark ? "Light Mode" : "Dark Mode"}
-    </button>
-  );
-}
 
 interface Blog {
   id: number;
