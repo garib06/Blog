@@ -28,14 +28,14 @@ function ThemeSwitcher() {
 
 export default function BlogDetailPage() {
   const { id } = useParams();
-  const [blog, setBlog] = useState<{ title: string; description: string; body: string } | null>(null);
+  const [blog, setBlog] = useState<{ title: string; description: string; body: string, category:string } | null>(null);
   const supabase = createClient();
 
   useEffect(() => {
     const fetchBlog = async () => {
       const { data, error } = await supabase
         .from('Blog')
-        .select('title, description, body')
+        .select('title, description, body, category')
         .eq('id', id)
         .single();
       if (error) {
@@ -64,6 +64,8 @@ export default function BlogDetailPage() {
         <h1 className="font-bold text-3xl mb-4 text-blue-700 dark:text-blue-200">{blog.title}</h1>
         <p className="mb-6 text-gray-600 dark:text-gray-300">{blog.description}</p>
         <div className="text-gray-800 dark:text-gray-100 whitespace-pre-line">{blog.body}</div>
+        <p className="mb-6 text-gray-600 dark:text-gray-300">{blog.category}</p>
+
       </div>
     </div>
   );

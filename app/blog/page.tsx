@@ -2,6 +2,8 @@
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { ThemeSwitcher } from "@/components/theme-switcher";
+import editorjsHTML from "editorjs-html";
+const edjsParser = editorjsHTML();
 
 // Simple theme switcher using Tailwind's dark mode
 
@@ -9,7 +11,7 @@ interface Blog {
   id: number;
   title: string;
   description: string;
-  category:string;
+  category: string;
   body: string;
 }
 
@@ -21,8 +23,26 @@ export default function Page() {
   const goToBlog = (id: number) => {
     window.location.href = `/blog/${id}`;
   };
+  function renderEditorJsHtml(data: any) {
+    // Must be an object with a blocks array
+    const edjsParser = editorjsHTML();
+    if (
+      !data ||
+      typeof data !== "object" ||
+      !Array.isArray(data.blocks) ||
+      data.blocks.length === 0
+    ) {
+      return "";
+    }
+    const htmlResult = edjsParser.parse(data);
+    if (Array.isArray(htmlResult)) {
+      return htmlResult.join("");
+    }
+    return htmlResult;
+  }
 
   useEffect(() => {
+
     const fetchBlogs = async () => {
       const { data, error } = await supabase.from("Blog").select("*");
       if (error) {
@@ -52,6 +72,7 @@ export default function Page() {
           </h2>
           <ul>
             {blogs.map((blog) => (
+              
               <li
                 key={blog.id}
                 className="mb-6 p-4 border rounded-lg hover:shadow-lg transition cursor-pointer bg-gradient-to-r from-blue-50 to-purple-50 dark:from-gray-700 dark:to-gray-900"
@@ -63,9 +84,12 @@ export default function Page() {
                 <p className="text-gray-600 dark:text-gray-300 mb-2">
                   {blog.description}
                 </p>
-                <div className="text-gray-800 dark:text-gray-100 whitespace-pre-line">
-                  {blog.body}
-                </div>
+                <div
+                  className="text-gray-800 dark:text-gray-100 whitespace-pre-line mb-4"
+                  dangerouslySetInnerHTML={{
+                    __html: blog.body ? renderEditorJsHtml(blog.body) : '',
+                  }}
+                />
                 <p className="text-gray-600 dark:text-gray-300 mt-2">
                   {blog.category}
                 </p>
