@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { ThemeSwitcher } from "@/components/theme-switcher";
 import editorjsHTML from "editorjs-html";
 const edjsParser = editorjsHTML();
 
@@ -25,7 +24,6 @@ export default function Page() {
   };
   function renderEditorJsHtml(data: any) {
     // Must be an object with a blocks array
-    const edjsParser = editorjsHTML();
     if (
       !data ||
       typeof data !== "object" ||
@@ -71,30 +69,39 @@ export default function Page() {
             Here are the blog posts
           </h2>
           <ul>
-            {blogs.map((blog) => (
-              
-              <li
-                key={blog.id}
-                className="mb-6 p-4 border rounded-lg hover:shadow-lg transition cursor-pointer bg-gradient-to-r from-blue-50 to-purple-50 dark:from-gray-700 dark:to-gray-900"
-                onClick={() => goToBlog(blog.id)}
-              >
-                <h3 className="font-bold text-xl text-blue-700 dark:text-blue-300 mb-1">
-                  {blog.title}
-                </h3>
-                <p className="text-gray-600 dark:text-gray-300 mb-2">
-                  {blog.description}
-                </p>
-                <div
-                  className="text-gray-800 dark:text-gray-100 whitespace-pre-line mb-4"
-                  dangerouslySetInnerHTML={{
-                    __html: blog.body ? renderEditorJsHtml(blog.body) : '',
-                  }}
-                />
-                <p className="text-gray-600 dark:text-gray-300 mt-2">
-                  {blog.category}
-                </p>
-              </li>
-            ))}
+            {blogs.map((blog: any) => {
+              let bodyData = blog.body;
+              if (typeof bodyData === "string") {
+                try {
+                  bodyData = JSON.parse(bodyData);
+                } catch {
+                  bodyData = {};
+                }
+              }
+              return (
+                <li
+                  key={blog.id}
+                  className="mb-6 p-4 border rounded-lg hover:shadow-lg transition cursor-pointer bg-gradient-to-r from-blue-50 to-purple-50 dark:from-gray-700 dark:to-gray-900"
+                  onClick={() => goToBlog(blog.id)}
+                >
+                  <h3 className="font-bold text-xl text-blue-700 dark:text-blue-300 mb-1">
+                    {blog.title}
+                  </h3>
+                  <p className="text-gray-600 dark:text-gray-300 mb-2">
+                    {blog.description}
+                  </p>
+                  <div
+                    className="text-gray-800 dark:text-gray-100 whitespace-pre-line mb-4"
+                    dangerouslySetInnerHTML={{
+                      __html: renderEditorJsHtml(bodyData),
+                    }}
+                  />
+                  <p className="text-gray-600 dark:text-gray-300 mt-2">
+                    {blog.category}
+                  </p>
+                </li>
+              );
+            })}
           </ul>
           {blogs.length === 0 && (
             <div className="text-center text-gray-400 dark:text-gray-500 mt-8">

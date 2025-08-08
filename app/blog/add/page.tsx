@@ -1,8 +1,20 @@
-"use client";
+'use client';
 
 import React, { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { redirect } from "next/navigation";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import editorjsHTML from "editorjs-html";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import Editor from "@/components/editor/editor";
 
 // ThemeSwitcher component for dark/light mode
 function ThemeSwitcher() {
@@ -62,43 +74,76 @@ export default function Page() {
           Add Blog
         </h1>
         <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-          <input
+        <div className="grid w-full max-w-sm items-center gap-3">
+          <Label htmlFor="title">&diams; Title</Label>
+          <Input
             type="text"
+            id="title"
             placeholder="Title"
-            className="border border-gray-300 dark:border-gray-700 p-3 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             required
           />
-          <input
+          </div>
+          <div className="grid w-full max-w-sm items-center gap-3">
+          <Label htmlFor="description">&diams; Description</Label>
+          <Input
             type="text"
+            id="description"
             placeholder="Description"
-            className="border border-gray-300 dark:border-gray-700 p-3 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             required
           />
-          <input
-            type="text"
-            placeholder="Description"
-            className="border border-gray-300 dark:border-gray-700 p-3 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            required
-          />
-          <textarea
-            placeholder="Body"
-            className="border border-gray-300 dark:border-gray-700 p-3 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-400 transition min-h-[120px] resize-y"
-            value={body}
-            onChange={(e) => setBody(e.target.value)}
-            required
-          />
-          <button
+          </div>
+          <div className="grid w-full max-w-sm items-center gap-2 ">
+            <Label
+              htmlFor="category"
+              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+            >
+              &diams; Select the Blog Category
+            </Label>
+            <Select
+              value={category}
+              onValueChange={setCategory}
+              required
+            >
+              <SelectTrigger className="w-full" id="category">
+                <SelectValue placeholder="Choose a category" />
+              </SelectTrigger>
+              <SelectContent side="bottom" align="start">
+                <SelectItem value="Technology">Technology</SelectItem>
+                <SelectItem value="Travel">Travel</SelectItem>
+                <SelectItem value="Food">Food</SelectItem>
+                <SelectItem value="Fashion">Fashion</SelectItem>
+                <SelectItem value="Finance">Finance</SelectItem>
+                <SelectItem value="Health">Health</SelectItem>
+                <SelectItem value="Education">Education</SelectItem>
+                <SelectItem value="Lifestyle">Lifestyle</SelectItem>
+                <SelectItem value="Sports">Sports</SelectItem>
+                <SelectItem value="Business">Business</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <Label
+              htmlFor="body"
+              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+            >
+              &diams; Enter the Blog Body
+            </Label>
+            <Editor
+              data={body}
+              onChange={setBody}
+              holder={`editorjs-add`}
+            />
+          </div>
+          <Button
             type="submit"
-            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition shadow-md"
+            variant={"default"}
           >
             Submit
-          </button>
+          </Button>
         </form>
         {message && (
           <div

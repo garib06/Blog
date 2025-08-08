@@ -162,7 +162,7 @@ export default function MyBlogPage() {
                   <div>
                     <div className="mb-2">
                       <div className="grid w-full max-w-sm items-center gap-3">
-                        <Label htmlFor="email">Email</Label>
+                        <Label htmlFor="email">&diams; Title</Label>
                         <Input
                           type="text"
                           id="edit-title"
@@ -173,7 +173,7 @@ export default function MyBlogPage() {
                       </div>
                     </div>
                     <div className="grid w-full max-w-sm items-center gap-3">
-                      <Label htmlFor="email">Description</Label>
+                      <Label htmlFor="email">&diams; Description</Label>
                       <Input
                         type="text"
                         value={editDescription}
@@ -188,7 +188,7 @@ export default function MyBlogPage() {
                         htmlFor="edit-category"
                         className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                       >
-                        Select the Blog Category
+                        &diams; Select the Blog Category
                       </Label>
                       <Select
                         value={editCategory}
@@ -217,7 +217,7 @@ export default function MyBlogPage() {
                         htmlFor="edit-body"
                         className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                       >
-                        Enter the Blog Body
+                        &diams; Enter the Blog Body
                       </Label>
                       <Editor
                         data={editBody}

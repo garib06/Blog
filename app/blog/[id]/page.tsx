@@ -2,6 +2,9 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import editorjsHTML from "editorjs-html";
+
+const edjsParser = editorjsHTML();
 
 // ThemeSwitcher component for dark/light mode
 function ThemeSwitcher() {
@@ -48,6 +51,23 @@ export default function BlogDetailPage() {
     if (id) fetchBlog();
   }, [id, supabase]);
 
+  function renderEditorJsHtml(data: any) {
+    // Must be an object with a blocks array
+    if (
+      !data ||
+      typeof data !== "object" ||
+      !Array.isArray(data.blocks) ||
+      data.blocks.length === 0
+    ) {
+      return "";
+    }
+    const htmlResult = edjsParser.parse(data);
+    if (Array.isArray(htmlResult)) {
+      return htmlResult.join("");
+    }
+    return htmlResult;
+  }
+
   if (!blog) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 via-white to-purple-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-colors">
@@ -57,13 +77,27 @@ export default function BlogDetailPage() {
     );
   }
 
+  let bodyData = blog.body;
+  if (typeof bodyData === "string") {
+    try {
+      bodyData = JSON.parse(bodyData);
+    } catch {
+      bodyData = "";
+    }
+  }
+
   return (
     <div className="min-h-screen pt-40 bg-gradient-to-br from-blue-100 via-white to-purple-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 py-10 transition-colors relative">
       <ThemeSwitcher />
       <div className="max-w-2xl mx-auto bg-white dark:bg-gray-800 rounded-xl shadow p-8">
         <h1 className="font-bold text-3xl mb-4 text-blue-700 dark:text-blue-200">{blog.title}</h1>
         <p className="mb-6 text-gray-600 dark:text-gray-300">{blog.description}</p>
-        <div className="text-gray-800 dark:text-gray-100 whitespace-pre-line">{blog.body}</div>
+        <div
+            className="prose dark:prose-invert"
+            dangerouslySetInnerHTML={{
+              __html: renderEditorJsHtml(bodyData),
+            }}
+          />
         <p className="mb-6 text-gray-600 dark:text-gray-300">{blog.category}</p>
 
       </div>
